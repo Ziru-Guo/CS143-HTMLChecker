@@ -35,6 +35,21 @@ public class HTMLManager {
         return result;
     }
 
-    public void fixHTML() {   
+    public void fixHTML() {
+        Stack<HTMLTag> openTags = new Stack<HTMLTag>();
+        int size = this.tags.size();
+        
+        for (int i = 0; i < size; i++) {
+            HTMLTag current = this.tags.remove();
+            
+            if (current.isSelfClosing()) {
+                // Self-closing tags are added directly back to queue
+                this.tags.add(current);
+            } else if (current.isOpening()) {
+                // Opening tags are added to queue and pushed onto stack
+                this.tags.add(current);
+                openTags.push(current);
+            }
+        }
     }
 }
