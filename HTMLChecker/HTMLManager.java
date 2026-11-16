@@ -49,7 +49,23 @@ public class HTMLManager {
                 // Opening tags are added to queue and pushed onto stack
                 this.tags.add(current);
                 openTags.push(current);
+            } else if (current.isClosing()) {
+                // Check if closing tag matches the top opening tag on stack
+                if (!openTags.isEmpty()) {
+                    if (openTags.peek().matches(current)) {
+                        this.tags.add(current);
+                        openTags.pop();
+                    } else {
+                        // Fix mismatch by adding matching tag for top of stack
+                        this.tags.add(openTags.pop().getMatching());
+                    }
+                }
             }
+        }
+        
+        // Close any leftover unclosed opening tags in stack
+        while (!openTags.isEmpty()) {
+            this.tags.add(openTags.pop().getMatching());
         }
     }
 }
